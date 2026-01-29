@@ -31,7 +31,12 @@ void onBTPageUpdate() {
     } else {
       for (int i = 0; i < n && i < 10; i++) {
         BLEAdvertisedDevice device = foundDevices->getDevice(i);
-        tft.printf("%d: %s (%d dBm)\n", i + 1, device.getName().c_str(), device.getRSSI());
+        tft.print(i + 1);
+        tft.print(F(": "));
+        tft.print(device.getName().c_str()); // .c_str() schadet hier nicht
+        tft.print(F(" ("));
+        tft.print(device.getRSSI());
+        tft.println(F(" dBm)"));
       }
     }
 

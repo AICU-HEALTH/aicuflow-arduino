@@ -22,7 +22,10 @@ void startSettingsAP() {
     WiFi.mode(WIFI_AP);
     WiFi.softAP("aicuflow");
     IPAddress myIP = WiFi.softAPIP();
-    if(VERBOSE) Serial.printf("AP IP: %s\n", myIP.toString().c_str());
+    if (VERBOSE) {
+        Serial.print(F("AP IP: "));
+        Serial.println(myIP);
+    }
 }
 
 // ------------------- Draw Instructions -------------------

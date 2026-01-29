@@ -184,9 +184,14 @@ void drawStaticElements(bool isSmall, int offsetY) {
     // Display model info
     char dispInfo[32];
     if(isSmall) {
-      snprintf(dispInfo, sizeof(dispInfo), "%dx%d", hwInfo.displayW, hwInfo.displayH);
+      tft.print(hwInfo.displayW);
+      tft.print('x');
+      tft.print(hwInfo.displayH);
     } else {
-      snprintf(dispInfo, sizeof(dispInfo), "TFT %dx%d", hwInfo.displayW, hwInfo.displayH);
+      tft.print(F("TFT "));
+      tft.print(hwInfo.displayW);
+      tft.print('x');
+      tft.print(hwInfo.displayH);
     }
     drawCompactText(dispX+2, dispY+2, dispInfo, COL_TEXT, fontSize);
     
@@ -208,7 +213,8 @@ void drawStaticElements(bool isSmall, int offsetY) {
   
   // Chip model (static)
   char chipName[32];
-  snprintf(chipName, sizeof(chipName), "%s r%d", hwInfo.chipModel.c_str(), hwInfo.chipRevision);
+  String chipStr = hwInfo.chipModel + " r" + String(hwInfo.chipRevision);
+  chipStr.toCharArray(chipName, sizeof(chipName));
   drawCompactText(espX+2, espY+2, chipName, COL_TEXT, fontSize);
   
   // CPU Cores (static)
@@ -219,7 +225,8 @@ void drawStaticElements(bool isSmall, int offsetY) {
     drawThinRect(coreX, coreY, coreW, 12, COL_ACCENT);
     
     char coreLabel[8];
-    snprintf(coreLabel, sizeof(coreLabel), "C%d", i);
+    String coreLabelStr = "C" + String(i);
+    coreLabelStr.toCharArray(coreLabel, sizeof(coreLabel));
     drawCompactText(coreX+2, coreY+3, coreLabel, COL_TEXT, fontSize);
   }
   
@@ -283,7 +290,7 @@ void drawStaticElements(bool isSmall, int offsetY) {
     
     // Pin label
     char pinLabel[8];
-    snprintf(pinLabel, sizeof(pinLabel), "%d", pin);
+    String(pin).toCharArray(pinLabel, sizeof(pinLabel));
     drawCompactText(2, py-3, pinLabel, pinCol, fontSize);
     
     // Special annotations
@@ -302,7 +309,7 @@ void drawStaticElements(bool isSmall, int offsetY) {
     drawThinLine(espX+espW+2, py, screenWidth-1, py, pinCol);
     
     char pinLabel[8];
-    snprintf(pinLabel, sizeof(pinLabel), "%d", pin);
+    String(pin).toCharArray(pinLabel, sizeof(pinLabel));
     drawCompactText(screenWidth-14, py-3, pinLabel, pinCol, fontSize);
     
     if(pin == hwInfo.rightButton) {
@@ -338,7 +345,8 @@ void updateDynamicElements(bool isSmall, int offsetY) {
   if(hwInfo.cpuFreqMHz != hwInfoPrev.cpuFreqMHz) {
     clearTextArea(espX+2, espY+27, 50, 8);
     char freqInfo[24];
-    snprintf(freqInfo, sizeof(freqInfo), "%dMHz", hwInfo.cpuFreqMHz);
+    String freqStr = String(hwInfo.cpuFreqMHz) + "MHz";
+    freqStr.toCharArray(freqInfo, sizeof(freqInfo));
     drawCompactText(espX+2, espY+27, freqInfo, COL_ACCENT, fontSize);
   }
   
@@ -346,11 +354,13 @@ void updateDynamicElements(bool isSmall, int offsetY) {
   if(hwInfo.freeHeap != hwInfoPrev.freeHeap || hwInfo.heapSize != hwInfoPrev.heapSize) {
     clearTextArea(espX+2, espY+36, espW-4, 8);
     char memInfo[32];
+    String memStr;
     if(isSmall) {
-      snprintf(memInfo, sizeof(memInfo), "%dK/%dK", hwInfo.freeHeap/1024, hwInfo.heapSize/1024);
+      memStr = String(hwInfo.freeHeap/1024) + "K/" + String(hwInfo.heapSize/1024) + "K";
     } else {
-      snprintf(memInfo, sizeof(memInfo), "RAM:%dK/%dK", hwInfo.freeHeap/1024, hwInfo.heapSize/1024);
+      memStr = "RAM:" + String(hwInfo.freeHeap/1024) + "K/" + String(hwInfo.heapSize/1024) + "K";
     }
+    memStr.toCharArray(memInfo, sizeof(memInfo));
     drawCompactText(espX+2, espY+36, memInfo, COL_TEXT, fontSize);
   }
   
@@ -358,14 +368,16 @@ void updateDynamicElements(bool isSmall, int offsetY) {
   if(hwInfo.psramSize > 0 && (hwInfo.psramFree != hwInfoPrev.psramFree || hwDiagFirstDraw)) {
     clearTextArea(espX+2, espY+45, 40, 8);
     char psramInfo[24];
-    snprintf(psramInfo, sizeof(psramInfo), "PS:%dM", hwInfo.psramSize/(1024*1024));
+    String psramStr = "PS:" + String(hwInfo.psramSize/(1024*1024)) + "M";
+    psramStr.toCharArray(psramInfo, sizeof(psramInfo));
     drawCompactText(espX+2, espY+45, psramInfo, COL_ACCENT, fontSize);
   }
   
   // Flash (static after first draw)
   if(!isSmall && hwDiagFirstDraw) {
     char flashInfo[24];
-    snprintf(flashInfo, sizeof(flashInfo), "FL:%dM", hwInfo.flashSize/(1024*1024));
+    String flashStr = "FL:" + String(hwInfo.flashSize/(1024*1024)) + "M";
+    flashStr.toCharArray(flashInfo, sizeof(flashInfo));
     drawCompactText(espX+42, espY+45, flashInfo, COL_ACCENT, fontSize);
   }
   
@@ -387,9 +399,8 @@ void updateDynamicElements(bool isSmall, int offsetY) {
   if(!isSmall && (hwInfo.usbConnected != hwInfoPrev.usbConnected || hwDiagFirstDraw)) {
     clearTextArea(2, screenHeight-20, screenWidth-4, 8);
     char statusLine[64];
-    snprintf(statusLine, sizeof(statusLine), "%s | %s", 
-             device->kind_short, 
-             hwInfo.usbConnected ? "USB" : "BATT");
+    String statusStr = String(device->kind_short) + " | " + (hwInfo.usbConnected ? "USB" : "BATT");
+    statusStr.toCharArray(statusLine, sizeof(statusLine));
     drawCompactText(2, screenHeight-20, statusLine, COL_TEXT, fontSize);
   }
 }

@@ -23,7 +23,12 @@ void onWifiPageUpdate() {
       tft.println("No networks found.");
     } else {
       for (int i = 0; i < n && i < 10; i++) {
-        tft.printf("%d: %s (%d)\n", i + 1, WiFi.SSID(i).c_str(), WiFi.RSSI(i));
+        tft.print(i + 1);
+        tft.print(": ");
+        tft.print(WiFi.SSID(i));
+        tft.print(" (");
+        tft.print(WiFi.RSSI(i));
+        tft.println(")");
       }
     }
     lastScanTime = millis();
