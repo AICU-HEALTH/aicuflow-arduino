@@ -20,7 +20,7 @@
 #define USE_BLUETOOTH false  // BT-LE is ca 1mb large, thus optional
 #define VERBOSE false        // Debugging recommended for developers
 #define BYTES_PER_POINT 240  // Reserved memory (increase if more sensors)
-#define ALL_PINS false       // (experimental) Register all pins as inputs
+#define ALL_PINS true       // (experimental) Register all pins as inputs
 
 // === Imports ===
 #include "library/device/DeviceProps.cpp"        // device detection
